@@ -19,13 +19,15 @@ def send_msg(event, vk_api):
         project_id=dialogflow_project_id,
         session_id=event.user_id,
         text=event.text,
+        is_fallbac=False,
     )
 
-    vk_api.messages.send(
-        user_id=event.user_id,
-        message=dialogflow_response,
-        random_id=random.randint(1, 1000)
-    )
+    if dialogflow_response:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message=dialogflow_response,
+            random_id=random.randint(1, 1000)
+        )
 
 
 if __name__ == '__main__':

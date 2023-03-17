@@ -51,7 +51,13 @@ def create_intent(project_id: str, intent_name: str, questions: list, answers: l
     print("Intent created: {}".format(response))
 
 
-def detect_intent_text(project_id: str, session_id: str, text: str, language_code: str = 'RU-ru') -> str:
+def detect_intent_text(
+        project_id: str,
+        session_id: str,
+        text: str,
+        language_code: str = 'RU-ru',
+        is_fallbac: bool = True,
+) -> str | None:
     session_client = dialogflow.SessionsClient()
 
     session = session_client.session_path(project_id, session_id)
@@ -75,7 +81,10 @@ def detect_intent_text(project_id: str, session_id: str, text: str, language_cod
     )
     print('Fulfillment text: {}\n'.format(response.query_result.fulfillment_text))
 
-    return response.query_result.fulfillment_text
+    if response.query_result.intent.is_fallback and not is_fallbac:
+        return None
+    else:
+        return response.query_result.fulfillment_text
 
 
 if __name__ == '__main__':
