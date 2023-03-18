@@ -6,7 +6,7 @@ import vk_api as vk
 
 from environs import Env
 from vk_api.longpoll import VkLongPoll, VkEventType
-from run_dialogflow import create_api_key, detect_intent_text
+from dialogflow import create_api_key, detect_intent_text
 
 
 def send_msg(event, vk_api):

@@ -5,7 +5,7 @@ from environs import Env
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
-from run_dialogflow import create_api_key, detect_intent_text
+from dialogflow import create_api_key, detect_intent_text
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

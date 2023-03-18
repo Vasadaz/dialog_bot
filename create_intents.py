@@ -2,7 +2,7 @@ import json
 
 from environs import Env
 
-from run_dialogflow import create_intent
+from dialogflow import create_intent
 
 
 INTENTS_FILE_NAME = 'intents.json'
