@@ -1,27 +1,65 @@
-#!/usr/bin/env python
+import html
+import json
+import logging
+import time
+import traceback
 
 from environs import Env
-
-from telegram import ForceReply, Update
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram import Update, ForceReply, ParseMode
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 from dialogflow import create_api_key, detect_intent_text
+from emergency_bot import send_alarm
+
+logger = logging.getLogger(__name__)
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+class TelegramLogsHandler(logging.Handler):
+    def __init__(self, bot_name):
+        super().__init__()
+        self.bot_name = bot_name
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        send_alarm(sender=self.bot_name, text=log_entry)
+
+
+def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
-
-    await update.message.reply_html(
-        rf"Hi {user.mention_html()}!",
+    update.message.reply_markdown_v2(
+        fr'{user.mention_markdown_v2()}, будем знакомы, я Бот Ботыч \!',
         reply_markup=ForceReply(selective=True),
     )
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Help!")
+def help_command(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text('Бот написан в образовательных целях на онлайн-курсе для веб-разработчиков dvmn.org')
 
 
-async def send_msg(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+def send_err(update: Update, context: CallbackContext) -> None:
+    global admin_tg_chat_id
+
+    logger.error(msg='Exception during message processing:', exc_info=context.error)
+
+    if update.effective_message:
+        text = 'К сожалению произошла ошибка в момент обработки сообщения. ' \
+               'Мы уже работаем над этой проблемой.'
+        update.effective_message.reply_text(text)
+
+    traceback_steps = ''.join(traceback.format_exception(None, context.error, context.error.__traceback__))
+
+    update_str = update.to_dict() if isinstance(update, Update) else str(update)
+
+    message = (
+        f'Error in Bot {context.bot.name}\n\n'
+        f'<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}</pre>\n\n'
+        f'{traceback_steps}'
+    )
+
+    send_alarm(sender=context.bot.name, text=message, parser=ParseMode.HTML)
+
+
+def send_msg(update: Update, context: CallbackContext) -> None:
     create_api_key()
 
     dialogflow_response = detect_intent_text(
@@ -29,17 +67,35 @@ async def send_msg(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         text=update.message.text,
     )
 
-    await update.message.reply_text(dialogflow_response)
+    update.message.reply_text(dialogflow_response)
+
+    raise NameError
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
+    logger.setLevel(logging.DEBUG)
+
     env = Env()
     env.read_env()
+    tg_token = env.str('TELEGRAM_BOT_TOKEN')
+    tg_bot_name = env.str('TELEGRAM_BOT_NAME')
 
-    tg_token = env.str("TELEGRAM_BOT_TOKEN")
+    logger.addHandler(TelegramLogsHandler(tg_bot_name))
+    logger.info('Start Telegram bot.')
 
-    application = Application.builder().token(tg_token).build()
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, send_msg))
-    application.run_polling()
+    while True:
+        try:
+            updater = Updater(tg_token)
+
+            dispatcher = updater.dispatcher
+            dispatcher.add_error_handler(send_err)
+            dispatcher.add_handler(CommandHandler('start', start))
+            dispatcher.add_handler(CommandHandler('help', help_command))
+            dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, send_msg))
+
+            updater.start_polling()
+            updater.idle()
+        except Exception as error:
+            logger.exception(error)
+            time.sleep(60)
