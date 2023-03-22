@@ -3,9 +3,8 @@
 Проект реализован для автоматизации ответов на часто задаваемые вопросы.
 
 Примеры:
-
-- [Бот Telegram](https://t.me/lesson_tg_3_devman_bot)
-- [Бот VK](https://vk.com/club219388423)
+   - [Бот Telegram](https://t.me/lesson_tg_3_devman_bot)
+   - [Бот VK](https://vk.com/club219388423)
 
 
 ## Как установить
@@ -26,7 +25,11 @@
    4. [Включить API агента](https://cloud.google.com/dialogflow/es/docs/quick/setup#api).
    
 
-4. [Получить токен Телеграм бота](https://telegram.me/BotFather).
+4. [Создать двух Телеграм ботов](https://telegram.me/BotFather).
+   - Первый бот будет основной для работы с пользователями
+   - Второй бот нужен для отправки сообщений об ошибках в основных ботах для Telegram и VK.
+   Его необходимо сразу активировать, т.е. инициализировать с ним диалог нажав на кнопку `СТАРТ(/start)`,
+   иначе он не сможет отправлять вам сообщения.
 
 
 5. 1. [Создать группу VK](https://vk.com/faq18025);
@@ -35,12 +38,15 @@
 
 6. Создать файл `.env` с данными:
     ```dotenv
-    DIALOGFLOW_API_KEY=AIQz...rdEc
-    DIALOGFLOW_PROJECT_ID=testbot-7414741
+    DIALOGFLOW_API_KEY=AIz...rEc
+    DIALOGFLOW_PROJECT_ID=my-voice-bot-123456
     GOOGLE_APPLICATION_CREDENTIALS=./credentials.json
-    TELEGRAM_BOT_TOKEN=585242324741:AAH...q_H7A
-    VK_BOT_TOKEN=vk1.a.AP_G...nABw
-
+    TELEGRAM_BOT_TOKEN=581247650:AAH...H7A # Токен основного бота Telegram
+    TELEGRAM_BOT_NAME="@lesson_tg_3_devman_bot" # Произвольное имя для основного бота Telegram
+    TELEGRAM_ADMIN_CHAT_ID=123456789 # Ваш id Telegram, сюда будут отправлятся сообщения об ошибках
+    TELEGRAM_ADMIN_BOT_TOKEN=5934478120:AAF...4X8 # Токен бота Telegram для отправки сообщений об ошибках
+    VK_BOT_TOKEN=vk1.a.tjC...NQ-g
+    VK_BOT_NAME="Игра Глаголов https://vk.com/club219388423" # Произвольное имя для бота VK
     ```
    
 7. Создать в Dialogflow ответы ботов на список типичных вопросов.
