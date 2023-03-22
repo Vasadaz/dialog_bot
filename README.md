@@ -40,13 +40,13 @@
     ```dotenv
     DIALOGFLOW_API_KEY=AIz...rEc
     DIALOGFLOW_PROJECT_ID=my-voice-bot-123456
-    GOOGLE_APPLICATION_CREDENTIALS=./credentials.json
-    TELEGRAM_BOT_TOKEN=581247650:AAH...H7A # Токен основного бота Telegram
-    TELEGRAM_BOT_NAME="@lesson_tg_3_devman_bot" # Произвольное имя для основного бота Telegram
-    TELEGRAM_ADMIN_CHAT_ID=123456789 # Ваш id Telegram, сюда будут отправлятся сообщения об ошибках
-    TELEGRAM_ADMIN_BOT_TOKEN=5934478120:AAF...4X8 # Токен бота Telegram для отправки сообщений об ошибках
+    GOOGLE_APPLICATION_CREDENTIALS=./credentials.json # Для запуска на сервере укажите полный путь.
+    TELEGRAM_BOT_TOKEN=581247650:AAH...H7A # Токен основного бота Telegram.
+    TELEGRAM_BOT_NAME="@lesson_tg_3_devman_bot" # Произвольное имя для основного бота Telegram.
+    TELEGRAM_ADMIN_CHAT_ID=123456789 # Ваш id Telegram, сюда будут отправлятся сообщения об ошибках.
+    TELEGRAM_ADMIN_BOT_TOKEN=5934478120:AAF...4X8 # Токен бота Telegram для отправки сообщений об ошибках.
     VK_BOT_TOKEN=vk1.a.tjC...NQ-g
-    VK_BOT_NAME="Игра Глаголов https://vk.com/club219388423" # Произвольное имя для бота VK
+    VK_BOT_NAME="Игра Глаголов https://vk.com/club219388423" # Произвольное имя для бота VK.
     ```
    
 7. Создать в Dialogflow ответы ботов на список типичных вопросов.
@@ -60,16 +60,56 @@
         ```
 
 8. Запуск ботов:
-    
-    - Telegram
-      ```shell
-      python3 run_tg_bot.py
-      ```
-    - VK
-      ```shell
-      python3 run_vk_bot.py
-      ```
 
+   1. Стандартный запуск:
+   
+      - Telegram:
+        ```shell
+        python3 run_tg_bot.py
+        ```
+        
+      - VK:
+        ```shell
+        python3 run_vk_bot.py
+        ```
+   
+   2. Запуск на сервере Debian через демон `systemd `:
+      - Для переменной среды `GOOGLE_APPLICATION_CREDENTIALS` укажите полный путь.      
+
+      - Отредактируйте и скопируйте файлы `*.system` в директорию `/etc/systemd/system/`:
+        ```shell
+        cp ./voice_bot_tg.service /etc/systemd/system/
+        cp ./voice_bot_vk.service /etc/systemd/system/
+        ```
+        
+      - Инициализируйте автозапуск демонов при включении сервера:
+        ```shell
+        systemctl enable voice_bot_tg
+        systemctl enable voice_bot_vk
+        ```
+      
+      - Запуск демонов:
+        ```shell
+        systemctl start voice_bot_tg
+        systemctl start voice_bot_vk
+        ```
+        
+      - Проверка статуса демонов:
+        ```shell
+        systemctl status voice_bot_tg
+        # ● voice_bot_tg.service
+        #   Loaded: loaded (/etc/systemd/system/voice_bot_tg.service; bad; vendor preset: enabled)
+        #   Active: active (running) since Wed 2023-03-22 14:39:27 UTC; 21min ago
+        #...
+        ```
+        ```shell
+        systemctl status voice_bot_vk
+        # ● voice_bot_vk.service
+        #   Loaded: loaded (/etc/systemd/system/voice_bot_vk.service; enabled; vendor preset: enabled)
+        #   Active: active (running) since Wed 2023-03-22 14:37:03 UTC; 19min ago
+        #...
+        ```
+        
 ### Цель проекта
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
