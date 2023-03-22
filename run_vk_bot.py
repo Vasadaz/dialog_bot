@@ -10,6 +10,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from dialogflow import create_api_key, detect_intent_text
 from emergency_bot import send_alarm
 
+
 logger = logging.getLogger(__name__)
 
 

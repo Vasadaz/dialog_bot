@@ -1,11 +1,10 @@
-#!/usr/bin/env python
-
 import datetime
 
 from environs import Env
 
 from google.cloud import api_keys_v2
 from google.cloud import dialogflow
+
 
 env = Env()
 env.read_env()

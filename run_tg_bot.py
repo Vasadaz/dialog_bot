@@ -27,7 +27,7 @@ class TelegramLogsHandler(logging.Handler):
 def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
     update.message.reply_markdown_v2(
-        fr'{user.mention_markdown_v2()}, будем знакомы, я Бот Ботыч \!',
+        fr'{user.mention_markdown_v2()}, будем знакомы, я Бот Ботыч\!',
         reply_markup=ForceReply(selective=True),
     )
 
@@ -47,11 +47,9 @@ def send_err(update: Update, context: CallbackContext) -> None:
         update.effective_message.reply_text(text)
 
     traceback_steps = ''.join(traceback.format_exception(None, context.error, context.error.__traceback__))
-
     update_str = update.to_dict() if isinstance(update, Update) else str(update)
 
     message = (
-        f'Error in Bot {context.bot.name}\n\n'
         f'<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}</pre>\n\n'
         f'{traceback_steps}'
     )
@@ -68,8 +66,6 @@ def send_msg(update: Update, context: CallbackContext) -> None:
     )
 
     update.message.reply_text(dialogflow_response)
-
-    raise NameError
 
 
 if __name__ == '__main__':
