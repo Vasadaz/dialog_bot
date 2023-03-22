@@ -3,9 +3,15 @@
 Проект реализован для автоматизации ответов на часто задаваемые вопросы.
 
 Примеры:
+
    - [Бот Telegram](https://t.me/lesson_tg_3_devman_bot)
+
+     ![tg.gif](docs%2Ftg.gif)
+
+
    - [Бот VK](https://vk.com/club219388423)
 
+     ![vk.gif](docs%2Fvk.gif)
 
 ## Как установить
 
