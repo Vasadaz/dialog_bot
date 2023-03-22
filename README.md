@@ -1,6 +1,6 @@
 # Боты Telegram и VK с обработкой сообщений в Dialogflow
 
-Проект реализован для автоматизации ответов на часто задаваемые вопросы.
+Проект помогает автоматизировать ответы на часто задаваемые вопросы в Telegram и VK.
 
 Примеры:
 
@@ -17,7 +17,7 @@
 
 1. Клонировать репозиторий:
     ```shell
-    git clone https://github.com/Vasdaz/voise_bot.git
+    git clone https://github.com/Vasdaz/voice_bot.git
     ```
 
 2. Установить зависимости:
@@ -31,7 +31,7 @@
    4. [Включить API агента](https://cloud.google.com/dialogflow/es/docs/quick/setup#api).
    
 
-4. [Создать двух Телеграм ботов](https://telegram.me/BotFather).
+4. [Создать двух Telegram ботов](https://telegram.me/BotFather).
    - Первый бот будет основной для работы с пользователями
    - Второй бот нужен для отправки сообщений об ошибках в основных ботах для Telegram и VK.
    Его необходимо сразу активировать, т.е. инициализировать с ним диалог нажав на кнопку `СТАРТ(/start)`,
@@ -39,7 +39,7 @@
 
 
 5. 1. [Создать группу VK](https://vk.com/faq18025);
-   2. [Получить токен Телеграм бота.](https://vk.com/@articles_vk-token-groups).
+   2. [Получить токен VK бот для сообщества](https://vk.com/@articles_vk-token-groups).
 
 
 6. Создать файл `.env` с данными:
