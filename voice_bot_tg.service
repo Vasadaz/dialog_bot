@@ -1,6 +1,0 @@
-[Service]
-ExecStart=/opt/voice_bot/.venv/bin/python3 /opt/voice_bot/run_tg_bot.py
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
