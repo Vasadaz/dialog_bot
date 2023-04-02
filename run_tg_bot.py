@@ -37,8 +37,6 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 
 def send_err(update: Update, context: CallbackContext) -> None:
-    global admin_tg_chat_id
-
     logger.error(msg='Exception during message processing:', exc_info=context.error)
 
     if update.effective_message:
