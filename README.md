@@ -66,56 +66,16 @@
         ```
 
 8. Запуск ботов:
-
-   1. Стандартный запуск:
-   
-      - Telegram:
-        ```shell
-        python3 run_tg_bot.py
-        ```
+   - Telegram:
+     ```shell
+     python3 run_tg_bot.py
+     ```
         
-      - VK:
-        ```shell
-        python3 run_vk_bot.py
-        ```
-   
-   2. Запуск на сервере Debian через демон `systemd `:
-      - Для переменной среды `GOOGLE_APPLICATION_CREDENTIALS` укажите полный путь.      
-
-      - Отредактируйте и скопируйте файлы `*.system` в директорию `/etc/systemd/system/`:
-        ```shell
-        cp ./voice_bot_tg.service /etc/systemd/system/
-        cp ./voice_bot_vk.service /etc/systemd/system/
-        ```
-        
-      - Инициализируйте автозапуск демонов при включении сервера:
-        ```shell
-        systemctl enable voice_bot_tg
-        systemctl enable voice_bot_vk
-        ```
-      
-      - Запуск демонов:
-        ```shell
-        systemctl start voice_bot_tg
-        systemctl start voice_bot_vk
-        ```
-        
-      - Проверка статуса демонов:
-        ```shell
-        systemctl status voice_bot_tg
-        # ● voice_bot_tg.service
-        #   Loaded: loaded (/etc/systemd/system/voice_bot_tg.service; bad; vendor preset: enabled)
-        #   Active: active (running) since Wed 2023-03-22 14:39:27 UTC; 21min ago
-        #...
-        ```
-        ```shell
-        systemctl status voice_bot_vk
-        # ● voice_bot_vk.service
-        #   Loaded: loaded (/etc/systemd/system/voice_bot_vk.service; enabled; vendor preset: enabled)
-        #   Active: active (running) since Wed 2023-03-22 14:37:03 UTC; 19min ago
-        #...
-        ```
-        
+   - VK:
+     ```shell
+     python3 run_vk_bot.py
+     ```
+    
 ### Цель проекта
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
