@@ -1,27 +1,14 @@
-import html
-import json
 import logging
 import time
-import traceback
 
 from environs import Env
-from telegram import Update, ForceReply, ParseMode
+from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 from dialogflow import detect_intent_text
-from emergency_bot import send_alarm
+from bot_logger import BotLogsHandler
 
 logger = logging.getLogger(__name__)
-
-
-class TelegramLogsHandler(logging.Handler):
-    def __init__(self, bot_name):
-        super().__init__()
-        self.bot_name = bot_name
-
-    def emit(self, record):
-        log_entry = self.format(record)
-        send_alarm(sender=self.bot_name, text=log_entry)
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -39,16 +26,6 @@ def send_err(update: Update, context: CallbackContext) -> None:
         text = 'К сожалению произошла ошибка в момент обработки сообщения. ' \
                'Мы уже работаем над этой проблемой.'
         update.effective_message.reply_text(text)
-
-    traceback_steps = ''.join(traceback.format_exception(None, context.error, context.error.__traceback__))
-    update_str = update.to_dict() if isinstance(update, Update) else str(update)
-
-    message = (
-        f'<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}</pre>\n\n'
-        f'{traceback_steps}'
-    )
-
-    send_alarm(sender=context.bot.name, text=message, parser=ParseMode.HTML)
 
 
 def send_msg(update: Update, context: CallbackContext) -> None:
@@ -70,8 +47,15 @@ if __name__ == '__main__':
     tg_token = env.str('TELEGRAM_BOT_TOKEN')
     tg_bot_name = env.str('TELEGRAM_BOT_NAME')
     dialogflow_project_id = env.str('DIALOGFLOW_PROJECT_ID')
+    admin_tg_token = env.str('TELEGRAM_ADMIN_BOT_TOKEN')
+    admin_tg_chat_id = env.str('TELEGRAM_ADMIN_CHAT_ID')
 
-    logger.addHandler(TelegramLogsHandler(tg_bot_name))
+    logger.addHandler(BotLogsHandler(
+        bot_name=tg_bot_name,
+        admin_tg_token=admin_tg_token,
+        admin_tg_chat_id=admin_tg_chat_id,
+    ))
+
     logger.info('Start Telegram bot.')
 
     while True:

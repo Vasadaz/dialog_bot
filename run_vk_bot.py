@@ -8,20 +8,9 @@ from environs import Env
 from vk_api.longpoll import VkLongPoll, VkEventType
 
 from dialogflow import detect_intent_text
-from emergency_bot import send_alarm
-
+from bot_logger import BotLogsHandler
 
 logger = logging.getLogger(__name__)
-
-
-class VKLogsHandler(logging.Handler):
-    def __init__(self, bot_name):
-        super().__init__()
-        self.bot_name = bot_name
-
-    def emit(self, record):
-        log_entry = self.format(record)
-        send_alarm(sender=self.bot_name, text=log_entry)
 
 
 def send_msg(event, vk_api):
@@ -49,8 +38,15 @@ if __name__ == '__main__':
     vk_token = env.str('VK_BOT_TOKEN')
     vk_bot_name = env.str('VK_BOT_NAME')
     dialogflow_project_id = env.str('DIALOGFLOW_PROJECT_ID')
+    admin_tg_token = env.str('TELEGRAM_ADMIN_BOT_TOKEN')
+    admin_tg_chat_id = env.str('TELEGRAM_ADMIN_CHAT_ID')
 
-    logger.addHandler(VKLogsHandler(vk_bot_name))
+    logger.addHandler(BotLogsHandler(
+        bot_name=vk_bot_name,
+        admin_tg_token=admin_tg_token,
+        admin_tg_chat_id=admin_tg_chat_id,
+    ))
+
     logger.info('Start VK bot.')
 
     while True:
