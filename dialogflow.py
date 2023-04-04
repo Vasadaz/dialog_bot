@@ -1,33 +1,9 @@
-import datetime
-
-from environs import Env
-
-from google.cloud import api_keys_v2
 from google.cloud import dialogflow
 
 
-def create_api_key() -> api_keys_v2.Key:
-    dialogflow_project_id = Env().str('DIALOGFLOW_PROJECT_ID')
-
-    client = api_keys_v2.ApiKeysClient()
-
-    key = api_keys_v2.Key()
-    key.display_name = f'API key {datetime.datetime.now().timestamp()}'
-
-    request = api_keys_v2.CreateKeyRequest()
-    request.parent = f'projects/{dialogflow_project_id}/locations/global'
-    request.key = key
-
-    response = client.create_key(request=request).result()
-
-    return response
-
-
-def create_intent(intent_name: str, questions: list, answers: list):
-    dialogflow_project_id = Env().str('DIALOGFLOW_PROJECT_ID')
-
+def create_intent(project_id: str, intent_name: str, questions: list, answers: list):
     intents_client = dialogflow.IntentsClient()
-    parent = dialogflow.AgentsClient.agent_path(dialogflow_project_id)
+    parent = dialogflow.AgentsClient.agent_path(project_id)
 
     training_phrases = []
     for question in questions:
@@ -48,15 +24,14 @@ def create_intent(intent_name: str, questions: list, answers: list):
 
 
 def detect_intent_text(
+        project_id: str,
         session_id: str,
         text: str,
         language_code: str = 'RU-ru',
         is_fallbac: bool = True,
 ) -> str | None:
-    dialogflow_project_id = Env().str('DIALOGFLOW_PROJECT_ID')
-
     session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(dialogflow_project_id, session_id)
+    session = session_client.session_path(project_id, session_id)
     text_input = dialogflow.TextInput(text=text, language_code=language_code)
     query_input = dialogflow.QueryInput(text=text_input)
     response = session_client.detect_intent(request={'session': session, 'query_input': query_input})

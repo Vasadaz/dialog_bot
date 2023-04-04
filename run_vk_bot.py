@@ -7,7 +7,7 @@ import vk_api as vk
 from environs import Env
 from vk_api.longpoll import VkLongPoll, VkEventType
 
-from dialogflow import create_api_key, detect_intent_text
+from dialogflow import detect_intent_text
 from emergency_bot import send_alarm
 
 
@@ -25,9 +25,8 @@ class VKLogsHandler(logging.Handler):
 
 
 def send_msg(event, vk_api):
-    create_api_key()
-
     dialogflow_response = detect_intent_text(
+        project_id=dialogflow_project_id,
         session_id=event.user_id,
         text=event.text,
         is_fallbac=False,
@@ -49,6 +48,7 @@ if __name__ == '__main__':
     env.read_env()
     vk_token = env.str('VK_BOT_TOKEN')
     vk_bot_name = env.str('VK_BOT_NAME')
+    dialogflow_project_id = env.str('DIALOGFLOW_PROJECT_ID')
 
     logger.addHandler(VKLogsHandler(vk_bot_name))
     logger.info('Start VK bot.')

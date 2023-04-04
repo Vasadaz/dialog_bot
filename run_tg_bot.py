@@ -8,7 +8,7 @@ from environs import Env
 from telegram import Update, ForceReply, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-from dialogflow import create_api_key, detect_intent_text
+from dialogflow import detect_intent_text
 from emergency_bot import send_alarm
 
 logger = logging.getLogger(__name__)
@@ -32,10 +32,6 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Бот написан в образовательных целях на онлайн-курсе для веб-разработчиков dvmn.org')
-
-
 def send_err(update: Update, context: CallbackContext) -> None:
     logger.error(msg='Exception during message processing:', exc_info=context.error)
 
@@ -56,9 +52,8 @@ def send_err(update: Update, context: CallbackContext) -> None:
 
 
 def send_msg(update: Update, context: CallbackContext) -> None:
-    create_api_key()
-
     dialogflow_response = detect_intent_text(
+        project_id=dialogflow_project_id,
         session_id=update.message.chat.id,
         text=update.message.text,
     )
@@ -74,6 +69,7 @@ if __name__ == '__main__':
     env.read_env()
     tg_token = env.str('TELEGRAM_BOT_TOKEN')
     tg_bot_name = env.str('TELEGRAM_BOT_NAME')
+    dialogflow_project_id = env.str('DIALOGFLOW_PROJECT_ID')
 
     logger.addHandler(TelegramLogsHandler(tg_bot_name))
     logger.info('Start Telegram bot.')
@@ -85,7 +81,6 @@ if __name__ == '__main__':
             dispatcher = updater.dispatcher
             dispatcher.add_error_handler(send_err)
             dispatcher.add_handler(CommandHandler('start', start))
-            dispatcher.add_handler(CommandHandler('help', help_command))
             dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, send_msg))
 
             updater.start_polling()
