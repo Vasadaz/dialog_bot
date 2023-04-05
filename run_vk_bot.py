@@ -18,13 +18,12 @@ def send_msg(event, vk_api):
         project_id=dialogflow_project_id,
         session_id=event.user_id,
         text=event.text,
-        is_fallbac=False,
     )
 
-    if dialogflow_response:
+    if not dialogflow_response.intent.is_fallback:
         vk_api.messages.send(
             user_id=event.user_id,
-            message=dialogflow_response,
+            message=dialogflow_response.fulfillment_text,
             random_id=random.randint(1, 1000)
         )
 

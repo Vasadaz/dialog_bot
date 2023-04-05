@@ -35,7 +35,7 @@ def send_msg(update: Update, context: CallbackContext) -> None:
         text=update.message.text,
     )
 
-    update.message.reply_text(dialogflow_response)
+    update.message.reply_text(dialogflow_response.fulfillment_text)
 
 
 if __name__ == '__main__':
