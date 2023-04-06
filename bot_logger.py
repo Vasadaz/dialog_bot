@@ -15,5 +15,5 @@ class BotLogsHandler(logging.Handler):
         bot = Bot(self.admin_tg_token)
         bot.send_message(
             chat_id=self.admin_tg_chat_id,
-            text=f'SENDER: {self.bot_name}\n\n{log_entry}',
+            text=f'{record.levelname} - sender {self.bot_name}:\n\n{log_entry}',
         )
