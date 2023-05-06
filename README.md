@@ -17,7 +17,7 @@
 
 1. Клонировать репозиторий:
     ```shell
-    git clone https://github.com/vasadaz/voice_bot.git
+    git clone https://github.com/Vasadaz/dialog_bot.git
     ```
 
 2. Установить зависимости:
